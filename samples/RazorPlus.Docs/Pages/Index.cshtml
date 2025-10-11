@@ -1,0 +1,45 @@
+@page
+@model RazorPlus.Docs.Pages.IndexModel
+@{
+    ViewData["Title"] = "RazorPlus Docs";
+}
+
+<h1>RazorPlus</h1>
+<p>Server-first Razor Pages UI components with great ergonomics.</p>
+
+<h2>Button</h2>
+<div style="display:flex; gap: 8px; flex-wrap: wrap;">
+    <rp-button>Default</rp-button>
+    <rp-button variant="primary">Primary</rp-button>
+    <rp-button variant="secondary">Secondary</rp-button>
+    <rp-button variant="ghost">Ghost</rp-button>
+    <rp-button variant="danger">Danger</rp-button>
+    <rp-button size="sm">Small</rp-button>
+    <rp-button size="lg">Large</rp-button>
+</div>
+
+<h2>Input</h2>
+<form method="post">
+    <rp-input asp-for="InputModel.Name" label="Full name" hint="Your legal name"></rp-input>
+    <rp-select asp-for="InputModel.Role" label="Role" items="Model.Roles"></rp-select>
+    <rp-button as="button" variant="primary">Submit</rp-button>
+    <rp-button as="a" href="#" variant="ghost">Link Button</rp-button>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div style="height:16px;"></div>
+  </form>
+
+<h2>Tabs</h2>
+<rp-tabs id="demo-tabs">
+    <rp-tab id="tab-1" header="One" active>
+        <p>First tab content.</p>
+    </rp-tab>
+    <rp-tab id="tab-2" header="Two">
+        <p>Second tab content.</p>
+    </rp-tab>
+</rp-tabs>
+
+<h2>Table</h2>
+<rp-table items="Model.Customers">
+  <rp-column for="Name" header="Name" />
+  <rp-column for="Email" header="Email" />
+</rp-table>
