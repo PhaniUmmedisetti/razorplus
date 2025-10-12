@@ -25,6 +25,8 @@ public class TableTagHelper : TagHelper
         output.TagName = "table";
         output.Attributes.SetAttribute("class", "rp-table");
         output.TagMode = TagMode.StartTagAndEndTag;
+        output.PreElement.SetHtmlContent("<div class=\"rp-table-container\">");
+        output.PostElement.SetHtmlContent("</div>");
 
         // allow child <rp-column> to register
         await output.GetChildContentAsync();

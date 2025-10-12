@@ -5,41 +5,115 @@
 }
 
 <h1>RazorPlus</h1>
-<p>Server-first Razor Pages UI components with great ergonomics.</p>
+<p>Server-first Razor Pages UI components with consistent theming, Tag Helper ergonomics, and minimal JavaScript. Toggle light/dark mode from the header to see tokens in action.</p>
 
-<h2>Button</h2>
-<div style="display:flex; gap: 8px; flex-wrap: wrap;">
-    <rp-button>Default</rp-button>
-    <rp-button variant="primary">Primary</rp-button>
-    <rp-button variant="secondary">Secondary</rp-button>
-    <rp-button variant="ghost">Ghost</rp-button>
-    <rp-button variant="danger">Danger</rp-button>
-    <rp-button size="sm">Small</rp-button>
-    <rp-button size="lg">Large</rp-button>
-</div>
+@if (TempData["ok"] is string saved)
+{
+    <div class="rp-hint">@saved</div>
+}
 
-<h2>Input</h2>
-<form method="post">
-    <rp-input asp-for="InputModel.Name" label="Full name" hint="Your legal name"></rp-input>
-    <rp-select asp-for="InputModel.Role" label="Role" items="Model.Roles"></rp-select>
-    <rp-button as="button" variant="primary">Submit</rp-button>
-    <rp-button as="a" href="#" variant="ghost">Link Button</rp-button>
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div style="height:16px;"></div>
-  </form>
+<section>
+    <h2>Buttons</h2>
+    <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+        <rp-button>Default</rp-button>
+        <rp-button variant="primary">Primary</rp-button>
+        <rp-button variant="secondary">Secondary</rp-button>
+        <rp-button variant="ghost">Ghost</rp-button>
+        <rp-button variant="danger">Danger</rp-button>
+        <rp-button size="sm">Small</rp-button>
+        <rp-button size="lg">Large</rp-button>
+    </div>
+</section>
 
-<h2>Tabs</h2>
-<rp-tabs id="demo-tabs">
-    <rp-tab id="tab-1" header="One" active>
-        <p>First tab content.</p>
-    </rp-tab>
-    <rp-tab id="tab-2" header="Two">
-        <p>Second tab content.</p>
-    </rp-tab>
-</rp-tabs>
+<section>
+    <h2>Form Controls</h2>
+    <form method="post" class="docs-grid">
+        <div>
+            <rp-input asp-for="InputModel.Name" label="Full name" hint="Your legal name"></rp-input>
+            <rp-validation-message asp-for="InputModel.Name"></rp-validation-message>
 
-<h2>Table</h2>
-<rp-table items="Model.Customers">
-  <rp-column for="Name" header="Name" />
-  <rp-column for="Email" header="Email" />
-</rp-table>
+            <rp-select asp-for="InputModel.Role" label="Role" items="Model.Roles"></rp-select>
+            <rp-validation-message asp-for="InputModel.Role"></rp-validation-message>
+
+            <rp-textarea asp-for="InputModel.Bio" label="About" hint="Tell us a bit about you" rows="4"></rp-textarea>
+            <rp-validation-message asp-for="InputModel.Bio"></rp-validation-message>
+
+            <rp-radio-group asp-for="InputModel.AccessLevel" items="Model.AccessLevels" label="Access" layout="horizontal"></rp-radio-group>
+            <rp-validation-message asp-for="InputModel.AccessLevel"></rp-validation-message>
+
+            <rp-switch asp-for="InputModel.AcceptTerms" label="Terms" hint="Required to continue" on-text="Accepted" off-text="Pending"></rp-switch>
+            <rp-validation-message asp-for="InputModel.AcceptTerms"></rp-validation-message>
+
+            <div style="display:flex; gap: 12px; margin-top: 16px;">
+                <rp-button variant="primary" type="submit">Save profile</rp-button>
+                <rp-button variant="ghost" type="reset">Reset</rp-button>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="rp-error"></div>
+        </div>
+        <div>
+            <p>Form helpers integrate with ASP.NET validation, emit consistent labels, hints, and error UX, and require no client-side frameworks.</p>
+            <ul>
+                <li><strong>rp-input</strong> and <strong>rp-textarea</strong> mirror HTML semantics.</li>
+                <li><strong>rp-select</strong> works with <code>SelectListItem</code> and upgrades with JS when needed.</li>
+                <li><strong>rp-radio-group</strong> renders an accessible fieldset with keyboard support.</li>
+                <li><strong>rp-switch</strong> exposes a switch role, aria-checked state, and progressive enhancement.</li>
+            </ul>
+        </div>
+    </form>
+</section>
+
+<section>
+    <h2>Tabs</h2>
+    <rp-tabs id="docs-tabs">
+        <rp-tab id="overview" header="Overview" active>
+            <p>Tabs render server-side. A small ES module adds roving tabindex and arrow-key navigation.</p>
+        </rp-tab>
+        <rp-tab id="details" header="Details">
+            <p>Use <code>&lt;rp-tab header="Name"&gt;</code> to add more panels. Content stays accessible with <code>role="tabpanel"</code>.</p>
+        </rp-tab>
+    </rp-tabs>
+</section>
+
+<section>
+    <h2>Accordion</h2>
+    <rp-accordion>
+        <rp-accordion-item header="Why RazorPlus?" expanded>
+            <p>Uniform UI across Razor Pages apps, focus on accessibility, and server-first performance.</p>
+        </rp-accordion-item>
+        <rp-accordion-item header="Keyboard support">
+            <p>Space/Enter toggles sections. ARIA attributes update automatically.</p>
+        </rp-accordion-item>
+        <rp-accordion-item header="Customization">
+            <p>Override CSS variables or extend Tag Helpers to align with your product.</p>
+        </rp-accordion-item>
+    </rp-accordion>
+</section>
+
+<section>
+    <h2>Modal</h2>
+    <div style="display:flex; gap: 12px; align-items: center;">
+        <rp-button variant="primary" onclick="RazorPlus.openModal('demo-modal')">Open modal</rp-button>
+        <p>Focus traps inside, Escape closes by default, and the overlay handles backdrop clicks.</p>
+    </div>
+    <rp-modal id="demo-modal" title="Invite teammate">
+        <p>Modals render server-side so they're indexable and easy to reason about.</p>
+        <div style="display:flex; gap: 12px; margin-top: 16px;">
+            <rp-button variant="primary">Send invite</rp-button>
+            <rp-button variant="ghost" onclick="RazorPlus.closeModal('demo-modal')">Cancel</rp-button>
+        </div>
+    </rp-modal>
+</section>
+
+<section>
+    <h2>Table</h2>
+    <rp-table items="Model.Customers">
+        <rp-column for="Name" header="Name" />
+        <rp-column for="Email" header="Email" />
+    </rp-table>
+</section>
+
+<section>
+    <h2>Chart</h2>
+    <rp-chart id="sales-chart" type="line" height="260" data="@Model.ChartData" options="@Model.ChartOptions" theme="auto"></rp-chart>
+    <p style="font-size:.9rem; color:var(--rp-muted);">Powered by ECharts (loaded on demand in future stages).</p>
+</section>

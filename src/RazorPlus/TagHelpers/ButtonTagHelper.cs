@@ -18,6 +18,8 @@ public class ButtonTagHelper : TagHelper
     public string As { get; set; } = "button"; // button|a
     public string? Href { get; set; }
     public bool Disabled { get; set; }
+    [HtmlAttributeName("type")]
+    public string? ButtonType { get; set; } = "button";
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -47,7 +49,8 @@ public class ButtonTagHelper : TagHelper
         {
             if (Disabled)
                 output.Attributes.SetAttribute("disabled", "disabled");
-            output.Attributes.SetAttribute("type", "button");
+            var typeValue = string.IsNullOrWhiteSpace(ButtonType) ? "button" : ButtonType;
+            output.Attributes.SetAttribute("type", typeValue);
         }
 
         if (Loading)
@@ -58,7 +61,8 @@ public class ButtonTagHelper : TagHelper
         // icon + content
         if (!string.IsNullOrWhiteSpace(Icon))
         {
-            output.Content.AppendHtml($"<span class=\"rp-btn__icon\" aria-hidden=\"true\"></span>");
+            var iconName = HtmlEncoder.Default.Encode(Icon);
+            output.Content.AppendHtml($"<span class=\"rp-btn__icon\" aria-hidden=\"true\" data-icon=\"{iconName}\"></span>");
         }
         output.Content.AppendHtml($"<span class=\"rp-btn__label\">{content.GetContent()}</span>");
     }

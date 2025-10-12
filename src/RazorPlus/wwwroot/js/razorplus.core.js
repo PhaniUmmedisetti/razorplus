@@ -2,6 +2,9 @@
 
 export function init(root = document) {
   enhanceTabs(root);
+  enhanceSwitches(root);
+  enhanceAccordion(root);
+  enhanceModals(root);
 }
 
 function enhanceTabs(root) {
@@ -58,6 +61,208 @@ function enhanceTabs(root) {
       if (panel) panel.classList.add('rp-tab--active');
     });
   });
+}
+
+function enhanceSwitches(root) {
+  const tracks = root.querySelectorAll('[data-rp-switch]');
+  tracks.forEach(track => {
+    if (track.dataset.enhanced) return;
+    track.dataset.enhanced = '1';
+    const input = track.querySelector('.rp-switch__control');
+    if (!input) return;
+    const state = track.querySelector('.rp-switch__state');
+    const update = () => {
+      input.setAttribute('aria-checked', input.checked ? 'true' : 'false');
+      if (state) {
+        const onText = state.dataset.on || 'On';
+        const offText = state.dataset.off || 'Off';
+        state.setAttribute('aria-label', input.checked ? onText : offText);
+      }
+      track.classList.toggle('rp-switch__track--checked', input.checked);
+    };
+    input.addEventListener('change', update);
+    update();
+  });
+}
+
+function enhanceAccordion(root) {
+  const accordions = root.querySelectorAll('[data-rp-accordion]');
+  accordions.forEach(acc => {
+    if (acc.dataset.enhanced) return;
+    acc.dataset.enhanced = '1';
+    acc.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-rp-accordion-trigger]');
+      if (!trigger || !acc.contains(trigger)) return;
+      toggleAccordion(trigger);
+    });
+    acc.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const trigger = event.target.closest('[data-rp-accordion-trigger]');
+      if (!trigger || !acc.contains(trigger)) return;
+      event.preventDefault();
+      toggleAccordion(trigger);
+    });
+  });
+}
+
+function toggleAccordion(trigger, force) {
+  const expanded = force !== undefined ? force : trigger.getAttribute('aria-expanded') !== 'true';
+  const panel = trigger.parentElement?.querySelector('[data-rp-accordion-panel]');
+  trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  if (panel) {
+    if (expanded) {
+      panel.removeAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', '');
+    }
+  }
+}
+
+const focusableSelector = 'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const modalState = new WeakMap();
+let modalOpenCount = 0;
+
+function lockBodyScroll() {
+  if (typeof document === 'undefined') return;
+  if (modalOpenCount === 0) {
+    const body = document.body;
+    if (body) {
+      body.dataset.rpModalScroll = body.style.overflow || '';
+      body.style.overflow = 'hidden';
+    }
+  }
+  modalOpenCount++;
+}
+
+function unlockBodyScroll() {
+  if (typeof document === 'undefined') return;
+  modalOpenCount = Math.max(0, modalOpenCount - 1);
+  if (modalOpenCount === 0) {
+    const body = document.body;
+    if (body) {
+      const prev = body.dataset.rpModalScroll ?? '';
+      body.style.overflow = prev;
+      delete body.dataset.rpModalScroll;
+    }
+  }
+}
+
+function enhanceModals(root) {
+  const modals = root.querySelectorAll('[data-rp-modal]');
+  modals.forEach(modal => {
+    if (modal.dataset.enhanced) return;
+    modal.dataset.enhanced = '1';
+    const dialog = modal.querySelector('[role="dialog"]');
+    const overlay = modal.querySelector('[data-rp-modal-overlay]');
+    const closeEls = modal.querySelectorAll('[data-rp-modal-close]');
+    if (!dialog) return;
+
+    const state = { lastActive: null, trapHandler: null, escHandler: null };
+    modalState.set(modal, state);
+
+    const close = () => closeModalElement(modal);
+    closeEls.forEach(btn => btn.addEventListener('click', close));
+    if (overlay && modal.dataset.rpModalStatic !== 'true') {
+      overlay.addEventListener('click', close);
+    }
+
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        if (modal.dataset.rpModalStatic === 'true') return;
+        close();
+      }
+    };
+
+    const trapFocus = (event) => {
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(dialog.querySelectorAll(focusableSelector)).filter(el => el.offsetParent !== null);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+
+    state.escHandler = handleEsc;
+    state.trapHandler = trapFocus;
+
+    if (modal.dataset.rpOpen === 'true') {
+      openModalElement(modal, false);
+    }
+  });
+}
+
+function openModalElement(modal, focusDialog = true) {
+  const dialog = modal.querySelector('[role="dialog"]');
+  if (!dialog) return;
+  const state = modalState.get(modal) ?? {};
+  state.lastActive = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  modal.removeAttribute('hidden');
+  modal.classList.add('rp-modal--open');
+  modal.dataset.rpOpen = 'true';
+  lockBodyScroll();
+  if (state.escHandler) {
+    document.addEventListener('keydown', state.escHandler);
+  }
+  if (state.trapHandler) {
+    modal.addEventListener('keydown', state.trapHandler);
+  }
+  if (focusDialog) {
+    requestAnimationFrame(() => {
+      const focusable = dialog.querySelector(focusableSelector);
+      if (focusable instanceof HTMLElement) {
+        focusable.focus();
+      } else {
+        dialog.focus();
+      }
+    });
+  }
+}
+
+function closeModalElement(modal) {
+  const dialog = modal.querySelector('[role="dialog"]');
+  if (!dialog) return;
+  const state = modalState.get(modal) ?? {};
+  modal.classList.remove('rp-modal--open');
+  modal.dataset.rpOpen = 'false';
+  modal.setAttribute('hidden', 'hidden');
+  if (state.escHandler) {
+    document.removeEventListener('keydown', state.escHandler);
+  }
+  if (state.trapHandler) {
+    modal.removeEventListener('keydown', state.trapHandler);
+  }
+  unlockBodyScroll();
+  if (state.lastActive instanceof HTMLElement) {
+    state.lastActive.focus({ preventScroll: false });
+  }
+}
+
+export function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal && modal.matches('[data-rp-modal]')) {
+    openModalElement(modal);
+  }
+}
+
+export function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal && modal.matches('[data-rp-modal]')) {
+    closeModalElement(modal);
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.RazorPlus = window.RazorPlus || {};
+  Object.assign(window.RazorPlus, { init, openModal, closeModal });
 }
 
 // Auto-init on DOM ready
