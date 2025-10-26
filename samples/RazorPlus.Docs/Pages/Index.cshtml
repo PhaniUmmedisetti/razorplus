@@ -28,11 +28,19 @@
 <section>
     <h2>Form Controls</h2>
     <form method="post" class="docs-grid">
-        <div>
+        <div class="docs-grid__form">
             <rp-input asp-for="InputModel.Name" label="Full name" hint="Your legal name"></rp-input>
             <rp-validation-message asp-for="InputModel.Name"></rp-validation-message>
 
-            <rp-select asp-for="InputModel.Role" label="Role" items="Model.Roles"></rp-select>
+            <rp-select asp-for="InputModel.Role"
+                       label="Role"
+                       items="Model.Roles"
+                       clearable="true"
+                       filterable="true"
+                       placeholder="Pick a role"
+                       fetch-url="@Url.Page(null, "RoleSearch")"
+                       search-min="1"
+                       debounce-ms="200"></rp-select>
             <rp-validation-message asp-for="InputModel.Role"></rp-validation-message>
 
             <rp-textarea asp-for="InputModel.Bio" label="About" hint="Tell us a bit about you" rows="4"></rp-textarea>
@@ -50,14 +58,15 @@
             </div>
             <div asp-validation-summary="ModelOnly" class="rp-error"></div>
         </div>
-        <div>
+        <div class="docs-grid__aside">
             <p>Form helpers integrate with ASP.NET validation, emit consistent labels, hints, and error UX, and require no client-side frameworks.</p>
             <ul>
                 <li><strong>rp-input</strong> and <strong>rp-textarea</strong> mirror HTML semantics.</li>
-                <li><strong>rp-select</strong> works with <code>SelectListItem</code> and upgrades with JS when needed.</li>
+                <li><strong>rp-select</strong> supports async search via <code>fetch-url</code>, optional filter inputs, and clear buttons.</li>
                 <li><strong>rp-radio-group</strong> renders an accessible fieldset with keyboard support.</li>
                 <li><strong>rp-switch</strong> exposes a switch role, aria-checked state, and progressive enhancement.</li>
             </ul>
+            <p class="rp-hint">Try typing “adm” in the role selector to see async search.</p>
         </div>
     </form>
 </section>
@@ -96,24 +105,44 @@
         <p>Focus traps inside, Escape closes by default, and the overlay handles backdrop clicks.</p>
     </div>
     <rp-modal id="demo-modal" title="Invite teammate">
-        <p>Modals render server-side so they're indexable and easy to reason about.</p>
-        <div style="display:flex; gap: 12px; margin-top: 16px;">
-            <rp-button variant="primary">Send invite</rp-button>
+        <rp-modal-header>
+            <h2 class="rp-modal__title">Invite teammate</h2>
+        </rp-modal-header>
+        <rp-modal-body>
+            <p>Modals render server-first. The header/footer slots let you compose actions without custom JS.</p>
+            <p class="rp-hint">Use <code>rp-modal-header</code>, <code>rp-modal-body</code>, and <code>rp-modal-footer</code> to slot structured content.</p>
+        </rp-modal-body>
+        <rp-modal-footer>
             <rp-button variant="ghost" onclick="RazorPlus.closeModal('demo-modal')">Cancel</rp-button>
-        </div>
+            <rp-button variant="primary">Send invite</rp-button>
+        </rp-modal-footer>
     </rp-modal>
 </section>
 
 <section>
     <h2>Table</h2>
-    <rp-table items="Model.Customers">
-        <rp-column for="Name" header="Name" />
-        <rp-column for="Email" header="Email" />
+    <p class="rp-hint">Sort by clicking headers; paging happens server-side via query parameters.</p>
+    <rp-table items="Model.PagedCustomers"
+              sortable="true"
+              pageable="true"
+              page-size="@Model.Pager.PageSize"
+              page="@Model.Pager.Page"
+              total-items="@Model.Pager.TotalItems"
+              sort-param="sort"
+              direction-param="dir"
+              page-param="page"
+              key-selector="Email">
+        <rp-column for="Name" header="Name" sortable="true" />
+        <rp-column for="Email" header="Email" sortable="true" />
+        <rp-column for="Company" header="Company" sortable="true" />
+        <rp-column for="Joined" header="Joined" sortable="true" template="@(customer => ((RazorPlus.Docs.Pages.Customer)customer).Joined.ToString("yyyy-MM-dd"))" />
+        <rp-column for="LifetimeValue" header="Lifetime Value" sortable="true" align="right" template="@(customer => ((RazorPlus.Docs.Pages.Customer)customer).LifetimeValue.ToString("C0"))" />
     </rp-table>
+    <rp-pagination page="@Model.Pager.Page" page-size="@Model.Pager.PageSize" total-items="@Model.Pager.TotalItems"></rp-pagination>
 </section>
 
 <section>
     <h2>Chart</h2>
     <rp-chart id="sales-chart" type="line" height="260" data="@Model.ChartData" options="@Model.ChartOptions" theme="auto"></rp-chart>
-    <p style="font-size:.9rem; color:var(--rp-muted);">Powered by ECharts (loaded on demand in future stages).</p>
+    <p style="font-size:.9rem; color:var(--rp-muted);">ECharts is loaded on demand; try switching theme to see auto restyling.</p>
 </section>

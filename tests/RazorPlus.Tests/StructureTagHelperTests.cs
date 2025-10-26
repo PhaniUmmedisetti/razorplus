@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using RazorPlus.TagHelpers;
 using Xunit;
@@ -59,4 +62,28 @@ public class StructureTagHelperTests
         Assert.Contains("rp-modal__dialog", html);
         Assert.Contains("rp-modal__header", html);
     }
+
+    [Fact]
+    public async Task TableTagHelper_WritesSortableHeaders()
+    {
+        var table = new TableTagHelper
+        {
+            Sortable = true,
+            ViewContext = new ViewContext { HttpContext = new DefaultHttpContext() },
+            Items = new[] { new TestRow("Ada"), new TestRow("Alan") }
+        };
+        table.Columns.Add(new ColumnDefinition { For = "Name", Header = "Name", EnableSort = true, SortKey = "name" });
+
+        var ctx = new TagHelperContext("rp-table", new TagHelperAttributeList(), new Dictionary<object, object?>(), Guid.NewGuid().ToString());
+        table.Init(ctx);
+
+        var output = new TagHelperOutput("rp-table", new TagHelperAttributeList(), (useCached, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+        await table.ProcessAsync(ctx, output);
+
+        var html = output.Content.GetContent();
+        Assert.Contains("rp-table__sort", html);
+        Assert.Contains("Name", html);
+    }
+
+    private record TestRow(string Name);
 }

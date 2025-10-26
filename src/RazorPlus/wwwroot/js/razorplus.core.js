@@ -5,6 +5,9 @@ export function init(root = document) {
   enhanceSwitches(root);
   enhanceAccordion(root);
   enhanceModals(root);
+  enhanceSelects(root);
+  enhanceTables(root);
+  enhanceCharts(root);
 }
 
 function enhanceTabs(root) {
@@ -83,6 +86,68 @@ function enhanceSwitches(root) {
     input.addEventListener('change', update);
     update();
   });
+}
+
+let selectModulePromise;
+function ensureSelectModule() {
+  if (!selectModulePromise) {
+    selectModulePromise = import('./razorplus.select.js');
+  }
+  return selectModulePromise;
+}
+
+function enhanceSelects(root) {
+  const selects = root.querySelectorAll('select[data-rp-select][data-rp-select-enhance]');
+  if (!selects.length) return;
+  ensureSelectModule().then(mod => {
+    selects.forEach(select => {
+      if (select.dataset.enhanced) return;
+      mod.enhanceSelect(select);
+    });
+  }).catch(err => console.error('RazorPlus select enhancement failed', err));
+}
+
+let tableModulePromise;
+function ensureTableModule() {
+  if (!tableModulePromise) {
+    tableModulePromise = import('./razorplus.table.js');
+  }
+  return tableModulePromise;
+}
+
+function enhanceTables(root) {
+  const tables = root.querySelectorAll('[data-rp-table][data-rp-table-client]');
+  if (!tables.length) return;
+  ensureTableModule().then(mod => {
+    tables.forEach(table => {
+      if (table.dataset.enhancedClient) return;
+      mod.enhanceClientTable(table);
+    });
+  }).catch(err => console.error('RazorPlus table enhancement failed', err));
+}
+
+let chartModulePromise;
+function ensureChartModule() {
+  if (!chartModulePromise) {
+    chartModulePromise = import('./razorplus.chart.js');
+  }
+  return chartModulePromise;
+}
+
+function enhanceCharts(root) {
+  const charts = root.querySelectorAll('[data-rp-chart]');
+  if (!charts.length) return;
+  ensureChartModule().then(mod => {
+    if (typeof window !== 'undefined') {
+      window.RazorPlus = window.RazorPlus || {};
+      if (mod.exportChart) window.RazorPlus.exportChart = mod.exportChart;
+      if (mod.disposeChart) window.RazorPlus.disposeChart = mod.disposeChart;
+    }
+    charts.forEach(chart => {
+      if (chart.dataset.enhanced) return;
+      mod.mountChart(chart);
+    });
+  }).catch(err => console.error('RazorPlus chart enhancement failed', err));
 }
 
 function enhanceAccordion(root) {
@@ -262,7 +327,14 @@ export function closeModal(id) {
 
 if (typeof window !== 'undefined') {
   window.RazorPlus = window.RazorPlus || {};
-  Object.assign(window.RazorPlus, { init, openModal, closeModal });
+  Object.assign(window.RazorPlus, {
+    init,
+    openModal,
+    closeModal,
+    refresh: (root = document) => {
+      init(root);
+    }
+  });
 }
 
 // Auto-init on DOM ready
