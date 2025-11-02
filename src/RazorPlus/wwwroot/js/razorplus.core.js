@@ -3,11 +3,15 @@
 export function init(root = document) {
   enhanceTabs(root);
   enhanceSwitches(root);
+  enhanceRadios(root); // Using stub - native behavior only
   enhanceAccordion(root);
   enhanceModals(root);
   enhanceSelects(root);
   enhanceTables(root);
   enhanceCharts(root);
+  enhanceDatePickers(root);
+  enhanceFileUploads(root);
+  enhanceDropdowns(root);
 }
 
 function enhanceTabs(root) {
@@ -88,6 +92,71 @@ function enhanceSwitches(root) {
   });
 }
 
+// TEMPORARILY COMMENTED OUT - Radio enhancement
+// function enhanceRadios(root) {
+//   console.log('[RazorPlus Radio] Starting enhancement, root:', root);
+//   const radioGroups = root.querySelectorAll('.rp-radio-group');
+//   console.log('[RazorPlus Radio] Found radio groups:', radioGroups.length);
+
+//   radioGroups.forEach((group, groupIndex) => {
+//     console.log(`[RazorPlus Radio] Processing group ${groupIndex}:`, group);
+//     if (group.dataset.enhanced) {
+//       console.log(`[RazorPlus Radio] Group ${groupIndex} already enhanced, skipping`);
+//       return;
+//     }
+//     group.dataset.enhanced = '1';
+//     const labels = group.querySelectorAll('.rp-radio');
+//     console.log(`[RazorPlus Radio] Found ${labels.length} radio labels in group ${groupIndex}`);
+
+//     labels.forEach((label, labelIndex) => {
+//       label.style.cursor = 'pointer';
+//       console.log(`[RazorPlus Radio] Enhanced label ${labelIndex} cursor`);
+
+//       label.addEventListener('click', (e) => {
+//         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+//         console.log('[RazorPlus Radio] CLICK EVENT FIRED');
+//         console.log('[RazorPlus Radio] Click target:', e.target);
+//         console.log('[RazorPlus Radio] Click target tagName:', e.target.tagName);
+//         console.log('[RazorPlus Radio] Click target className:', e.target.className);
+//         console.log('[RazorPlus Radio] Click target type:', e.target.type);
+//         console.log('[RazorPlus Radio] Event currentTarget:', e.currentTarget);
+
+//         const input = label.querySelector('.rp-radio__input');
+//         console.log('[RazorPlus Radio] Found input:', input);
+//         console.log('[RazorPlus Radio] Input disabled?', input?.disabled);
+//         console.log('[RazorPlus Radio] Input checked before?', input?.checked);
+//         console.log('[RazorPlus Radio] Is target the input?', e.target === input);
+
+//         if (input && !input.disabled) {
+//           // Only prevent default if NOT clicking the input itself
+//           if (e.target !== input) {
+//             console.log('[RazorPlus Radio] ✓ Click on LABEL/TEXT - preventing default and checking programmatically');
+//             e.preventDefault();
+//             input.checked = true;
+//             console.log('[RazorPlus Radio] Input checked after:', input.checked);
+//             input.dispatchEvent(new Event('change', { bubbles: true }));
+//             console.log('[RazorPlus Radio] Change event dispatched');
+//           } else {
+//             console.log('[RazorPlus Radio] ✓ Click on INPUT BALL - letting native behavior work');
+//           }
+//         } else {
+//           console.log('[RazorPlus Radio] ✗ Input not found or disabled');
+//         }
+//         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+//       });
+
+//       console.log(`[RazorPlus Radio] Attached click listener to label ${labelIndex}`);
+//     });
+//   });
+
+//   console.log('[RazorPlus Radio] Enhancement complete');
+// }
+
+// Stub function to prevent errors
+function enhanceRadios(root) {
+  // No enhancement - using native browser behavior only
+}
+
 let selectModulePromise;
 function ensureSelectModule() {
   if (!selectModulePromise) {
@@ -116,14 +185,40 @@ function ensureTableModule() {
 }
 
 function enhanceTables(root) {
-  const tables = root.querySelectorAll('[data-rp-table][data-rp-table-client]');
-  if (!tables.length) return;
-  ensureTableModule().then(mod => {
-    tables.forEach(table => {
-      if (table.dataset.enhancedClient) return;
-      mod.enhanceClientTable(table);
-    });
-  }).catch(err => console.error('RazorPlus table enhancement failed', err));
+  // Client-side sortable/pageable tables
+  const clientTables = root.querySelectorAll('[data-rp-table][data-rp-table-client]');
+  if (clientTables.length > 0) {
+    ensureTableModule().then(mod => {
+      clientTables.forEach(table => {
+        if (table.dataset.enhancedClient) return;
+        mod.enhanceClientTable(table);
+      });
+    }).catch(err => console.error('RazorPlus table enhancement failed', err));
+  }
+
+  // Table selection for all tables with selectable attribute
+  const selectableTables = root.querySelectorAll('[data-rp-table][data-rp-table-selectable]');
+  if (selectableTables.length > 0) {
+    ensureTableModule().then(mod => {
+      selectableTables.forEach(table => {
+        if (table.dataset.enhancedSelection) return;
+        table.dataset.enhancedSelection = '1';
+        mod.enhanceTableSelection(table);
+      });
+    }).catch(err => console.error('RazorPlus table selection enhancement failed', err));
+  }
+
+  // Table row clicks
+  const clickableTables = root.querySelectorAll('[data-rp-table][data-rp-row-click]');
+  if (clickableTables.length > 0) {
+    ensureTableModule().then(mod => {
+      clickableTables.forEach(table => {
+        if (table.dataset.enhancedRowClick) return;
+        table.dataset.enhancedRowClick = '1';
+        mod.enhanceRowClick(table);
+      });
+    }).catch(err => console.error('RazorPlus table row click enhancement failed', err));
+  }
 }
 
 let chartModulePromise;
@@ -323,6 +418,66 @@ export function closeModal(id) {
   if (modal && modal.matches('[data-rp-modal]')) {
     closeModalElement(modal);
   }
+}
+
+// Date pickers
+let datePickerModulePromise;
+function ensureDatePickerModule() {
+  if (!datePickerModulePromise) {
+    datePickerModulePromise = import('./razorplus.datepicker.js');
+  }
+  return datePickerModulePromise;
+}
+
+function enhanceDatePickers(root) {
+  const pickers = root.querySelectorAll('[data-rp-date-picker]');
+  if (!pickers.length) return;
+  ensureDatePickerModule().then(mod => {
+    pickers.forEach(picker => {
+      if (picker.dataset.rpEnhanced) return;
+      mod.enhanceDatePicker(picker);
+    });
+  }).catch(err => console.error('RazorPlus date picker enhancement failed', err));
+}
+
+// File uploads
+let fileUploadModulePromise;
+function ensureFileUploadModule() {
+  if (!fileUploadModulePromise) {
+    fileUploadModulePromise = import('./razorplus.fileupload.js');
+  }
+  return fileUploadModulePromise;
+}
+
+function enhanceFileUploads(root) {
+  const uploaders = root.querySelectorAll('[data-rp-file-upload]');
+  if (!uploaders.length) return;
+  ensureFileUploadModule().then(mod => {
+    uploaders.forEach(uploader => {
+      if (uploader.dataset.rpEnhanced) return;
+      mod.enhanceFileUpload(uploader);
+    });
+  }).catch(err => console.error('RazorPlus file upload enhancement failed', err));
+}
+
+// Dropdowns
+let dropdownModulePromise;
+function ensureDropdownModule() {
+  if (!dropdownModulePromise) {
+    dropdownModulePromise = import('./razorplus.dropdown.js');
+  }
+  return dropdownModulePromise;
+}
+
+function enhanceDropdowns(root) {
+  const dropdowns = root.querySelectorAll('[data-rp-dropdown]');
+  if (!dropdowns.length) return;
+  ensureDropdownModule().then(mod => {
+    dropdowns.forEach(dropdown => {
+      if (dropdown.dataset.rpEnhanced) return;
+      mod.enhanceDropdown(dropdown);
+    });
+  }).catch(err => console.error('RazorPlus dropdown enhancement failed', err));
 }
 
 if (typeof window !== 'undefined') {

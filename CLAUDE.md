@@ -28,26 +28,44 @@ razorplus/
 │   │   ├── TextAreaTagHelper.cs
 │   │   ├── SwitchTagHelper.cs
 │   │   ├── RadioGroupTagHelper.cs
+│   │   ├── CheckboxTagHelper.cs
 │   │   ├── ValidationMessageTagHelper.cs
 │   │   ├── TabsTagHelpers.cs
 │   │   ├── AccordionTagHelper.cs
 │   │   ├── ModalTagHelper.cs
 │   │   ├── TableTagHelpers.cs
 │   │   ├── PaginationTagHelper.cs
-│   │   └── ChartTagHelper.cs
+│   │   ├── ChartTagHelper.cs
+│   │   ├── DatePickerTagHelper.cs
+│   │   ├── FileUploadTagHelper.cs
+│   │   ├── BreadcrumbTagHelper.cs
+│   │   ├── DropdownTagHelper.cs
+│   │   ├── ProgressTagHelper.cs
+│   │   ├── ListTagHelper.cs
+│   │   ├── StageDividerTagHelper.cs
+│   │   └── PopupSelectorTagHelper.cs
 │   ├── wwwroot/
 │   │   ├── css/
-│   │   │   └── razorplus.css         # Complete stylesheet
+│   │   │   ├── razorplus.css         # Complete stylesheet
+│   │   │   └── themes/
+│   │   │       ├── README.md
+│   │   │       └── razorplus-theme-enterprise.css
 │   │   └── js/
 │   │       ├── razorplus.core.js      # Core initialization
 │   │       ├── razorplus.select.js    # Select enhancements
 │   │       ├── razorplus.table.js     # Client table features
-│   │       └── razorplus.chart.js     # ECharts integration
+│   │       ├── razorplus.chart.js     # ECharts integration
+│   │       ├── razorplus.datepicker.js
+│   │       ├── razorplus.fileupload.js
+│   │       ├── razorplus.dropdown.js
+│   │       └── razorplus.toast.js
 │   └── RazorPlus.csproj
 ├── samples/RazorPlus.Docs/      # Documentation & demo site
 │   ├── Pages/
 │   │   ├── Index.cshtml
 │   │   ├── Index.cshtml.cs
+│   │   ├── Components.cshtml        # NEW: Full component showcase
+│   │   ├── Components.cshtml.cs
 │   │   └── Shared/
 │   │       └── _Layout.cshtml
 │   └── Program.cs
@@ -1814,13 +1832,37 @@ dotnet add package RazorPlus
 
 ## Summary
 
-RazorPlus is a **production-ready, server-first UI library** for ASP.NET Core Razor Pages and MVC. With 12 accessible components, minimal JavaScript, token-based theming, and comprehensive documentation, it provides a solid foundation for modern web applications without the complexity of heavy client-side frameworks.
+RazorPlus is a **production-ready, server-first UI library** for ASP.NET Core Razor Pages and MVC. With 22+ accessible components, minimal JavaScript, token-based theming, and comprehensive documentation, it provides a solid foundation for modern web applications without the complexity of heavy client-side frameworks.
 
-**Current Completion**: 35% of full vision (12 of ~50 planned components)
+**Current Completion**: ~45% of full vision (22 of ~50 planned components)
 **Production Ready**: ✅ Yes
 **Target Frameworks**: .NET 6.0, .NET 7.0
 **Dependencies**: ASP.NET Core only (ECharts loaded dynamically for charts)
 **License**: MIT (assumed, to be confirmed)
+
+**Component Count**:
+- Form Components: 8 (input, textarea, select, checkbox, switch, radio-group, validation-message, date-picker, file-upload)
+- Structural: 6 (button, tabs, accordion, breadcrumb, dropdown, stage-divider)
+- Data Display: 5 (table, pagination, chart, list, progress)
+- Overlays: 2 (modal, popup-selector)
+- Notifications: 1 (toast - JavaScript only)
+
+**Recent Additions**:
+- Checkbox component with validation support
+- Date picker with calendar widget
+- File upload with drag-and-drop and preview
+- Breadcrumb navigation
+- Dropdown menus with nested submenus
+- Progress bars (determinate and indeterminate)
+- List component with icons and badges
+- Stage divider for workflow sections
+- Toast notifications (JavaScript)
+- Enterprise theme variant
+- Customization guide documentation
+- Full component showcase demo page
+
+**Known Issues**:
+- Radio button enhancement temporarily disabled (using native browser behavior)
 
 **Philosophy**:
 - Server-rendered HTML for performance and SEO
@@ -1830,4 +1872,13 @@ RazorPlus is a **production-ready, server-first UI library** for ASP.NET Core Ra
 - Token-based theming for customization
 - Native ASP.NET integration for productivity
 
-This file represents the complete knowledge base of RazorPlus as of Stage 3 completion.
+**Documentation Files**:
+- `CLAUDE.md` - Complete technical documentation (this file)
+- `README.md` - Project overview and getting started
+- `QUICK_REFERENCE.md` - Quick component reference
+- `CUSTOMIZATION_GUIDE.md` - Theming and styling guide
+- `RAZORPLUS_SPECIFICATION.md` - Component specifications
+- `CHANGELOG.md` - Version history
+- `VERSIONING.md` - Versioning strategy
+
+This file represents the complete knowledge base of RazorPlus as of v1.1.0.

@@ -216,3 +216,142 @@ function renderPagination(table, nav, totalPages) {
   append('Next', Math.min(totalPages, state.page + 1), nextDisabled, false, 'next');
 }
 
+// Row selection handling
+export function enhanceTableSelection(table) {
+  const selectAll = table.querySelector('.rp-table__select-all');
+  if (!selectAll) return;
+
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  // Select all checkbox
+  selectAll.addEventListener('change', () => {
+    const isChecked = selectAll.checked;
+    const rowCheckboxes = tbody.querySelectorAll('.rp-table__select-row');
+    rowCheckboxes.forEach(checkbox => {
+      checkbox.checked = isChecked;
+      updateRowSelection(checkbox.closest('tr'), isChecked);
+    });
+
+    dispatchSelectionChange(table);
+  });
+
+  // Individual row checkboxes
+  tbody.addEventListener('change', (e) => {
+    if (e.target.classList.contains('rp-table__select-row')) {
+      const row = e.target.closest('tr');
+      updateRowSelection(row, e.target.checked);
+
+      // Update select-all state
+      const rowCheckboxes = Array.from(tbody.querySelectorAll('.rp-table__select-row'));
+      const allChecked = rowCheckboxes.every(cb => cb.checked);
+      const someChecked = rowCheckboxes.some(cb => cb.checked);
+      selectAll.checked = allChecked;
+      selectAll.indeterminate = someChecked && !allChecked;
+
+      dispatchSelectionChange(table);
+    }
+  });
+
+  // Stop propagation on checkbox clicks to prevent row click handler
+  tbody.addEventListener('click', (e) => {
+    if (e.target.classList.contains('rp-table__select-row') ||
+        e.target.closest('.rp-table__select-cell')) {
+      e.stopPropagation();
+    }
+  });
+}
+
+function updateRowSelection(row, isSelected) {
+  if (!row) return;
+  if (isSelected) {
+    row.classList.add('rp-table__row--selected');
+    row.setAttribute('aria-selected', 'true');
+  } else {
+    row.classList.remove('rp-table__row--selected');
+    row.removeAttribute('aria-selected');
+  }
+}
+
+function dispatchSelectionChange(table) {
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  const selectedRows = Array.from(tbody.querySelectorAll('.rp-table__select-row:checked'))
+    .map(checkbox => {
+      const row = checkbox.closest('tr');
+      return {
+        element: row,
+        key: row?.dataset.rpRowKey || null
+      };
+    });
+
+  table.dispatchEvent(new CustomEvent('rp-selection-change', {
+    detail: { selectedRows, selectedKeys: selectedRows.map(r => r.key).filter(k => k !== null) }
+  }));
+}
+
+// Row click handling
+export function enhanceRowClick(table) {
+  const onRowClickHandler = table.dataset.rpRowClick;
+  if (!onRowClickHandler) return;
+
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  tbody.addEventListener('click', (e) => {
+    const row = e.target.closest('tr');
+    if (!row || !row.classList.contains('rp-table__row--clickable')) return;
+
+    // Don't trigger row click if clicking on interactive elements
+    if (e.target.closest('a, button, input, select, textarea')) return;
+
+    const rowKey = row.dataset.rpRowKey || null;
+
+    // Call the handler function if it exists
+    if (typeof window[onRowClickHandler] === 'function') {
+      window[onRowClickHandler](rowKey, row, e);
+    }
+
+    // Dispatch event
+    table.dispatchEvent(new CustomEvent('rp-row-click', {
+      detail: { row, key: rowKey, event: e }
+    }));
+  });
+}
+
+// Get selected rows API
+export function getSelectedRows(table) {
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return [];
+
+  return Array.from(tbody.querySelectorAll('.rp-table__select-row:checked'))
+    .map(checkbox => {
+      const row = checkbox.closest('tr');
+      return {
+        element: row,
+        key: row?.dataset.rpRowKey || null
+      };
+    });
+}
+
+// Clear selection API
+export function clearSelection(table) {
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  const rowCheckboxes = tbody.querySelectorAll('.rp-table__select-row');
+  rowCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+    updateRowSelection(checkbox.closest('tr'), false);
+  });
+
+  const selectAll = table.querySelector('.rp-table__select-all');
+  if (selectAll) {
+    selectAll.checked = false;
+    selectAll.indeterminate = false;
+  }
+
+  dispatchSelectionChange(table);
+}
+

@@ -7,6 +7,32 @@
     <GenerateRazorMetadata>true</GenerateRazorMetadata>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <IncludeRazorContentInPack>true</IncludeRazorContentInPack>
+
+    <!-- Package Information -->
+    <PackageId>RazorPlus</PackageId>
+    <Version>1.1.0</Version>
+    <Authors>RazorPlus Contributors</Authors>
+    <Company>RazorPlus</Company>
+    <Description>A production-ready Razor Class Library (RCL) for ASP.NET Core with accessible, server-first UI components. Includes Element Plus-inspired design system with multiple theme options for modern and enterprise applications.</Description>
+    <PackageTags>razor;aspnetcore;ui-library;components;taghelpers;razor-pages;mvc;element-plus;enterprise;workflow</PackageTags>
+    <PackageProjectUrl>https://github.com/razorplus/razorplus</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/razorplus/razorplus</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>
+      Version 1.1.0:
+      - Added Enterprise theme preset for workflow applications
+      - Added theme switching support
+      - Added new components: Popup Selector, Stage Divider
+      - Enhanced existing components with theme variables
+      - Improved accessibility and keyboard navigation
+      - Added Material Design shadow system
+      - Added badge, alert, and card components
+    </PackageReleaseNotes>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
 

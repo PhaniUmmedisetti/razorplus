@@ -1,0 +1,324 @@
+@page
+@model RazorPlus.Docs.Pages.ComponentsModel
+@{
+    ViewData["Title"] = "RazorPlus Components Demo";
+}
+
+<style>
+    .demo-section {
+        margin-bottom: 48px;
+        padding: 24px;
+        background: #f9fafb;
+        border-radius: 8px;
+    }
+    [data-theme="dark"] .demo-section {
+        background: #1f2937;
+    }
+    .demo-section h2 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #2563eb;
+        font-size: 1.5rem;
+    }
+    .demo-grid {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+    .demo-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .component-demo {
+        background: white;
+        padding: 16px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+    [data-theme="dark"] .component-demo {
+        background: #111827;
+        border-color: #374151;
+    }
+</style>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+    <h1>RazorPlus Components Showcase</h1>
+    <button onclick="toggleTheme()" class="rp-btn rp-btn--ghost rp-btn--sm">Toggle Dark Mode</button>
+</div>
+
+<!-- 1. BUTTONS -->
+<div class="demo-section">
+    <h2>1. Buttons</h2>
+    <div class="demo-row">
+        <rp-button variant="primary">Primary</rp-button>
+        <rp-button variant="secondary">Secondary</rp-button>
+        <rp-button variant="ghost">Ghost</rp-button>
+        <rp-button variant="danger">Danger</rp-button>
+    </div>
+    <div class="demo-row">
+        <rp-button variant="primary" size="sm">Small</rp-button>
+        <rp-button variant="primary" size="md">Medium</rp-button>
+        <rp-button variant="primary" size="lg">Large</rp-button>
+    </div>
+    <div class="demo-row">
+        <rp-button variant="primary" icon="✓">With Icon</rp-button>
+        <rp-button variant="primary" disabled="true">Disabled</rp-button>
+        <rp-button variant="primary" block="true">Block Button</rp-button>
+    </div>
+</div>
+
+<!-- 2. FORM INPUTS -->
+<div class="demo-section">
+    <h2>2. Form Inputs</h2>
+    <form method="post">
+        <div class="demo-grid">
+            <rp-input asp-for="FormData.Name" label="Full Name" required="true" hint="Enter your full name" />
+
+            <rp-input asp-for="FormData.Email" label="Email Address" prefix="📧" required="true" />
+
+            <rp-textarea asp-for="FormData.Message" label="Message" rows="4" hint="Enter your message" />
+
+            <rp-select asp-for="FormData.Country" items="Model.Countries" label="Country" clearable="true" />
+
+            <rp-checkbox asp-for="FormData.AcceptTerms" label="I accept the terms and conditions" required="true" />
+
+            <rp-switch asp-for="FormData.EnableNotifications" label="Enable Notifications" />
+
+            <rp-radio-group asp-for="FormData.Plan" items="Model.Plans" label="Select Plan" />
+        </div>
+
+        <div class="demo-row" style="margin-top: 16px;">
+            <rp-button variant="primary" type="submit">Submit Form</rp-button>
+            <rp-button variant="ghost" type="button" onclick="RazorPlus.toast.success('Form would be submitted!')">Test Toast</rp-button>
+        </div>
+    </form>
+</div>
+
+<!-- 3. DATE PICKER & FILE UPLOAD -->
+<div class="demo-section">
+    <h2>3. Date Picker & File Upload</h2>
+    <div class="demo-grid">
+        <rp-date-picker asp-for="FormData.StartDate" label="Start Date" format="MM/dd/yyyy" clearable="true" />
+
+        <rp-file-upload name="Documents"
+                        label="Upload Documents"
+                        accept=".pdf,.doc,.docx"
+                        max-size="5242880"
+                        max-files="3"
+                        multiple="true"
+                        preview="true"
+                        hint="Maximum 3 files, 5MB each" />
+    </div>
+</div>
+
+<!-- 4. PROGRESS BARS -->
+<div class="demo-section">
+    <h2>4. Progress Bars</h2>
+    <div class="demo-grid">
+        <rp-progress value="25" label="Upload Progress" show-percentage="true" variant="primary" />
+        <rp-progress value="65" label="Processing" show-percentage="true" variant="success" />
+        <rp-progress value="85" label="Almost Done" show-percentage="true" variant="warning" striped="true" animated="true" />
+        <rp-progress indeterminate="true" label="Loading..." variant="info" />
+    </div>
+</div>
+
+<!-- 5. BREADCRUMBS -->
+<div class="demo-section">
+    <h2>5. Breadcrumbs</h2>
+    <rp-breadcrumb>
+        <rp-breadcrumb-item text="Home" href="/" icon="🏠" />
+        <rp-breadcrumb-item text="Components" href="/components" />
+        <rp-breadcrumb-item text="Demo" active="true" />
+    </rp-breadcrumb>
+</div>
+
+<!-- 6. DROPDOWN MENUS -->
+<div class="demo-section">
+    <h2>6. Dropdown Menus</h2>
+    <div class="demo-row">
+        <rp-dropdown trigger-text="Actions" variant="primary">
+            <rp-dropdown-item text="Edit" icon="✏️" onclick="RazorPlus.toast.info('Edit clicked')" />
+            <rp-dropdown-item text="Delete" icon="🗑️" onclick="RazorPlus.toast.danger('Delete clicked')" />
+            <rp-dropdown-divider />
+            <rp-dropdown text="More Options" icon="⚙️">
+                <rp-dropdown-item text="Export" onclick="RazorPlus.toast.info('Export clicked')" />
+                <rp-dropdown-item text="Archive" onclick="RazorPlus.toast.info('Archive clicked')" />
+            </rp-dropdown>
+        </rp-dropdown>
+
+        <rp-dropdown trigger-text="Settings" variant="ghost">
+            <rp-dropdown-item text="Profile" icon="👤" href="/profile" />
+            <rp-dropdown-item text="Preferences" icon="⚙️" href="/settings" />
+            <rp-dropdown-divider />
+            <rp-dropdown-item text="Logout" icon="🚪" onclick="RazorPlus.toast.warning('Logout clicked')" />
+        </rp-dropdown>
+    </div>
+</div>
+
+<!-- 7. TABS -->
+<div class="demo-section">
+    <h2>7. Tabs</h2>
+    <div data-rp-tabs id="demo-tabs">
+        <rp-tab id="tab1" header="Overview" active="true">
+            <h3>Overview Content</h3>
+            <p>This is the overview tab content. Tabs support keyboard navigation with arrow keys.</p>
+        </rp-tab>
+        <rp-tab id="tab2" header="Details">
+            <h3>Details Content</h3>
+            <p>This is the details tab. You can have as many tabs as needed.</p>
+        </rp-tab>
+        <rp-tab id="tab3" header="Settings">
+            <h3>Settings Content</h3>
+            <p>Settings tab content goes here.</p>
+        </rp-tab>
+    </div>
+</div>
+
+<!-- 8. ACCORDION -->
+<div class="demo-section">
+    <h2>8. Accordion</h2>
+    <div data-rp-accordion id="demo-accordion">
+        <rp-accordion-item id="acc1" header="What is RazorPlus?" expanded="true">
+            <p>RazorPlus is a production-ready Razor Class Library for ASP.NET Core with accessible, server-first UI components.</p>
+        </rp-accordion-item>
+        <rp-accordion-item id="acc2" header="How do I install it?">
+            <p>Install via NuGet: <code>dotnet add package RazorPlus</code></p>
+        </rp-accordion-item>
+        <rp-accordion-item id="acc3" header="Is it customizable?">
+            <p>Yes! RazorPlus uses CSS custom properties for theming and supports dark mode out of the box.</p>
+        </rp-accordion-item>
+    </div>
+</div>
+
+<!-- 9. TABLE WITH SELECTION & ROW CLICKS -->
+<div class="demo-section">
+    <h2>9. Data Table</h2>
+    <rp-table items="Model.Customers"
+              sortable="true"
+              selectable="true"
+              row-clickable="true"
+              on-row-click="handleRowClick"
+              hoverable="true"
+              key-selector="Id">
+        <rp-column for="Name" header="Customer" sortable="true" />
+        <rp-column for="Email" header="Email" sortable="true" />
+        <rp-column for="Company" header="Company" />
+        <rp-column for="Status" header="Status" align="center" />
+    </rp-table>
+
+    <div style="margin-top: 16px;">
+        <button onclick="showSelectedRows()" class="rp-btn rp-btn--secondary rp-btn--sm">Show Selected Rows</button>
+        <button onclick="clearTableSelection()" class="rp-btn rp-btn--ghost rp-btn--sm">Clear Selection</button>
+    </div>
+</div>
+
+<!-- 10. LIST -->
+<div class="demo-section">
+    <h2>10. Lists</h2>
+    <rp-list hoverable="true" bordered="true">
+        <rp-list-item title="Dashboard" icon="📊" href="/" badge="New" />
+        <rp-list-item title="Components" icon="🧩" href="/components" active="true" />
+        <rp-list-item title="Documentation" icon="📖" href="/docs" />
+        <rp-list-item title="Settings" icon="⚙️" onclick="RazorPlus.toast.info('Settings clicked')" />
+    </rp-list>
+</div>
+
+<!-- 11. MODAL -->
+<div class="demo-section">
+    <h2>11. Modal</h2>
+    <rp-button variant="primary" onclick="RazorPlus.openModal('demo-modal')">Open Modal</rp-button>
+
+    <rp-modal id="demo-modal" title="Demo Modal">
+        <rp-modal-body>
+            <p>This is a modal dialog with focus trap and keyboard support.</p>
+            <p>Press ESC to close or click outside the modal.</p>
+        </rp-modal-body>
+        <rp-modal-footer>
+            <rp-button variant="ghost" onclick="RazorPlus.closeModal('demo-modal')">Cancel</rp-button>
+            <rp-button variant="primary" onclick="RazorPlus.closeModal('demo-modal'); RazorPlus.toast.success('Confirmed!')">Confirm</rp-button>
+        </rp-modal-footer>
+    </rp-modal>
+</div>
+
+<!-- 12. STAGE DIVIDERS (Workflow) -->
+<div class="demo-section">
+    <h2>12. Workflow Stage Dividers</h2>
+    <rp-stage-divider stage="1" title="Preparation">
+        <p>Initial setup and planning phase content.</p>
+    </rp-stage-divider>
+
+    <rp-stage-divider stage="2" title="Execution">
+        <p>Main execution phase content.</p>
+    </rp-stage-divider>
+
+    <rp-stage-divider stage="3" title="Review">
+        <p>Review and approval phase content.</p>
+    </rp-stage-divider>
+</div>
+
+<!-- 13. TOAST NOTIFICATIONS -->
+<div class="demo-section">
+    <h2>13. Toast Notifications</h2>
+    <div class="demo-row">
+        <button onclick="RazorPlus.toast.success('Operation successful!')" class="rp-btn rp-btn--sm">Success Toast</button>
+        <button onclick="RazorPlus.toast.info('Information message')" class="rp-btn rp-btn--sm">Info Toast</button>
+        <button onclick="RazorPlus.toast.warning('Warning message!')" class="rp-btn rp-btn--sm">Warning Toast</button>
+        <button onclick="RazorPlus.toast.danger('Error occurred!')" class="rp-btn rp-btn--sm">Error Toast</button>
+        <button onclick="showToastWithAction()" class="rp-btn rp-btn--sm">Toast with Action</button>
+    </div>
+</div>
+
+<script>
+    // Theme toggle
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        RazorPlus.toast.info('Theme toggled!', { duration: 2000 });
+    }
+
+    // Table row click handler
+    function handleRowClick(key, row, event) {
+        RazorPlus.toast.info(`Clicked row: ${key}`);
+    }
+
+    // Show selected rows
+    function showSelectedRows() {
+        const table = document.querySelector('[data-rp-table]');
+        const selected = table.rpTable?.getSelectedRows?.() || [];
+        if (selected.length === 0) {
+            RazorPlus.toast.warning('No rows selected');
+        } else {
+            RazorPlus.toast.success(`${selected.length} row(s) selected`);
+        }
+    }
+
+    // Clear table selection
+    function clearTableSelection() {
+        const table = document.querySelector('[data-rp-table]');
+        table.rpTable?.clearSelection?.();
+        RazorPlus.toast.info('Selection cleared');
+    }
+
+    // Toast with action
+    function showToastWithAction() {
+        RazorPlus.toast.info('Would you like to continue?', {
+            duration: 0,
+            action: {
+                text: 'Yes',
+                onClick: () => RazorPlus.toast.success('Continued!')
+            }
+        });
+    }
+
+    // Listen to table selection changes
+    document.addEventListener('DOMContentLoaded', () => {
+        const table = document.querySelector('[data-rp-table]');
+        if (table) {
+            table.addEventListener('rp-selection-change', (e) => {
+                console.log('Selection changed:', e.detail.selectedKeys);
+            });
+        }
+    });
+</script>

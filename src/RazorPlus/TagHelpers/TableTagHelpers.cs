@@ -31,6 +31,26 @@ public class TableTagHelper : TagHelper
     public string EmptyText { get; set; } = "No records found.";
     public string? KeySelector { get; set; }
 
+    /// <summary>
+    /// Enable row selection with checkboxes
+    /// </summary>
+    public bool Selectable { get; set; }
+
+    /// <summary>
+    /// Enable row click handlers
+    /// </summary>
+    public bool RowClickable { get; set; }
+
+    /// <summary>
+    /// JavaScript function name for row click handler
+    /// </summary>
+    public string? OnRowClick { get; set; }
+
+    /// <summary>
+    /// Hover effect on rows
+    /// </summary>
+    public bool Hoverable { get; set; } = true;
+
     // server-only MVP: column definitions by child tag helpers
     public List<ColumnDefinition> Columns { get; } = new();
 
@@ -45,6 +65,8 @@ public class TableTagHelper : TagHelper
         output.TagName = "table";
         var classes = "rp-table";
         if (Client) classes += " rp-table--client";
+        if (Hoverable) classes += " rp-table--hoverable";
+        if (RowClickable) classes += " rp-table--clickable";
         output.Attributes.SetAttribute("class", classes);
         output.Attributes.SetAttribute("data-rp-table", string.Empty);
         if (Client)
@@ -57,6 +79,14 @@ public class TableTagHelper : TagHelper
             output.Attributes.SetAttribute("data-rp-page-size", PageSize.ToString());
             output.Attributes.SetAttribute("data-rp-page", Page.ToString());
             output.Attributes.SetAttribute("data-rp-total", TotalItems.ToString());
+        }
+        if (Selectable)
+        {
+            output.Attributes.SetAttribute("data-rp-table-selectable", "true");
+        }
+        if (RowClickable && !string.IsNullOrWhiteSpace(OnRowClick))
+        {
+            output.Attributes.SetAttribute("data-rp-row-click", OnRowClick);
         }
         output.TagMode = TagMode.StartTagAndEndTag;
         output.PreElement.SetHtmlContent("<div class=\"rp-table-container\">");
@@ -73,6 +103,15 @@ public class TableTagHelper : TagHelper
         var basePath = request?.Path.HasValue == true ? request.Path.Value! : string.Empty;
 
         output.Content.AppendHtml("<thead><tr>");
+
+        // Add selection checkbox column header
+        if (Selectable)
+        {
+            output.Content.AppendHtml("<th class=\"rp-table__select-cell\">");
+            output.Content.AppendHtml("<input type=\"checkbox\" class=\"rp-table__select-all\" aria-label=\"Select all rows\" />");
+            output.Content.AppendHtml("</th>");
+        }
+
         var columnIndex = 0;
         foreach (var c in Columns)
         {
@@ -166,6 +205,24 @@ public class TableTagHelper : TagHelper
                     }
                 }
 
+                if (RowClickable)
+                {
+                    tr.AddCssClass("rp-table__row--clickable");
+                }
+
+                // Add selection checkbox cell
+                if (Selectable)
+                {
+                    var checkboxTd = new TagBuilder("td");
+                    checkboxTd.AddCssClass("rp-table__select-cell");
+                    var checkbox = new TagBuilder("input");
+                    checkbox.Attributes["type"] = "checkbox";
+                    checkbox.AddCssClass("rp-table__select-row");
+                    checkbox.Attributes["aria-label"] = "Select row";
+                    checkboxTd.InnerHtml.AppendHtml(checkbox);
+                    tr.InnerHtml.AppendHtml(checkboxTd);
+                }
+
                 foreach (var c in Columns)
                 {
                     var td = new TagBuilder("td");
@@ -181,7 +238,7 @@ public class TableTagHelper : TagHelper
                     }
                     else if (value != null)
                     {
-                        td.InnerHtml.Append(value.ToString());
+                        td.InnerHtml.Append(value.ToString() ?? string.Empty);
                     }
                     tr.InnerHtml.AppendHtml(td);
                 }
@@ -193,7 +250,9 @@ public class TableTagHelper : TagHelper
         {
             var emptyRow = new TagBuilder("tr");
             var td = new TagBuilder("td");
-            td.Attributes["colspan"] = Columns.Count > 0 ? Columns.Count.ToString() : "1";
+            var colspan = Columns.Count;
+            if (Selectable) colspan++; // Account for checkbox column
+            td.Attributes["colspan"] = colspan > 0 ? colspan.ToString() : "1";
             td.AddCssClass("rp-table__empty");
             td.InnerHtml.Append(EmptyText);
             emptyRow.InnerHtml.AppendHtml(td);

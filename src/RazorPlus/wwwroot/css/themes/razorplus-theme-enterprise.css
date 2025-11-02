@@ -1,0 +1,500 @@
+/*
+ * RazorPlus - Enterprise Theme
+ * Version: 1.1.0
+ *
+ * This theme provides professional enterprise application styling with:
+ * - Cyan/teal primary colors for visibility
+ * - Colored input backgrounds for better form field distinction
+ * - Material Design shadows for depth hierarchy
+ * - Workflow stage colors for process-oriented applications
+ * - Three-tier button hierarchy (primary, secondary, tertiary)
+ * - Sharp corners for formal business applications
+ *
+ * Best For:
+ * - Manufacturing and pharmaceutical systems
+ * - Workflow management applications
+ * - Business process automation
+ * - Enterprise resource planning (ERP)
+ * - Quality management systems
+ *
+ * Usage:
+ * <link href="_content/RazorPlus/css/razorplus.css" rel="stylesheet" />
+ * <link href="_content/RazorPlus/css/themes/razorplus-theme-enterprise.css" rel="stylesheet" />
+ */
+
+:root {
+  /* Brand Colors */
+  --rp-primary: #36c6d3;
+  --rp-primary-dark: #2a9ba5;
+  --rp-secondary: #486CAE;
+
+  /* Status Colors */
+  --rp-success: #32c5d2;
+  --rp-warning: #f1c40f;
+  --rp-danger: #e74c3c;
+  --rp-info: #3498db;
+
+  /* Neutral Colors */
+  --rp-fg: #333333;
+  --rp-text-secondary: #888888;
+  --rp-text-muted: #999999;
+  --rp-border: #c2cad8;
+  --rp-bg: #ffffff;
+  --rp-bg-alt: #f5f5f5;
+
+  /* Functional Colors */
+  --rp-input-bg: lightcyan;
+  --rp-readonly-bg: #f0f0f0;
+  --rp-disabled-bg: #e9ecef;
+
+  /* Workflow Stage Colors */
+  --rp-stage-preparation: lightcyan;
+  --rp-stage-issuance: peachpuff;
+  --rp-stage-execution: lightblue;
+  --rp-stage-closure: lemonchiffon;
+  --rp-stage-equipment: LightBlue;
+  --rp-stage-location: PowderBlue;
+  --rp-stage-workflow: #ffffcc;
+  --rp-stage-dispensing: Thistle;
+
+  /* Typography */
+  --rp-font: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rp-font-mono: "Courier New", monospace;
+
+  /* Geometry */
+  --rp-radius: 0px; /* Sharp corners for enterprise applications */
+  --rp-gap: 8px;
+  --rp-focus: 0 0 0 2px rgba(54, 198, 211, 0.25);
+
+  /* Material Design Shadows */
+  --rp-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.18);
+  --rp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.18);
+  --rp-shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.22);
+  --rp-shadow-lg: 0 8px 18px rgba(0, 0, 0, 0.18), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --rp-shadow-xl: 0 14px 28px rgba(0, 0, 0, 0.26), 0 10px 10px rgba(0, 0, 0, 0.22);
+  --rp-shadow-2xl: 0 19px 38px rgba(0, 0, 0, 0.28), 0 15px 12px rgba(0, 0, 0, 0.22);
+
+  /* Control Sizes */
+  --rp-control-sm: 32px;
+  --rp-control-md: 38px;
+  --rp-control-lg: 44px;
+}
+
+/* Dark Mode for Enterprise Theme */
+[data-theme="dark"] {
+  --rp-fg: #e5e7eb;
+  --rp-text-secondary: #9ca3af;
+  --rp-text-muted: #6b7280;
+  --rp-border: #4b5563;
+  --rp-bg: #111827;
+  --rp-bg-alt: #1f2937;
+  --rp-input-bg: #0f172a;
+  --rp-readonly-bg: #1e293b;
+  --rp-disabled-bg: #334155;
+  --rp-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================
+   BUTTON COMPONENTS
+   ============================================ */
+
+/* Primary Button (Main Actions) */
+.rp-btn--primary {
+  background-color: var(--rp-primary);
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.rp-btn--primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--rp-primary-dark);
+  box-shadow: 0 2px 8px rgba(54, 198, 211, 0.3);
+}
+
+.rp-btn--primary:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(1px);
+}
+
+/* Secondary Button */
+.rp-btn--secondary {
+  background-color: var(--rp-secondary);
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.rp-btn--secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: #3a5a8f;
+  box-shadow: 0 2px 8px rgba(72, 108, 174, 0.3);
+}
+
+/* Tertiary Button (Outline) */
+.rp-btn--tertiary {
+  background-color: transparent;
+  color: var(--rp-primary);
+  border: 1px solid var(--rp-primary);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.rp-btn--tertiary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: rgba(54, 198, 211, 0.1);
+}
+
+/* Ghost Button */
+.rp-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--rp-border);
+  color: var(--rp-fg);
+}
+
+.rp-btn--ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--rp-bg-alt);
+}
+
+/* Danger Button */
+.rp-btn--danger {
+  background-color: var(--rp-danger);
+  color: white;
+  border: none;
+}
+
+.rp-btn--danger:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: #c0392b;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+/* Success Button */
+.rp-btn--success {
+  background-color: var(--rp-success);
+  color: white;
+  border: none;
+}
+
+.rp-btn--success:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: #28a3ae;
+}
+
+/* Button Focus State */
+.rp-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--rp-focus);
+  outline-offset: 2px;
+}
+
+/* Disabled State */
+.rp-btn:disabled,
+.rp-btn[aria-disabled="true"] {
+  background-color: var(--rp-disabled-bg);
+  color: var(--rp-text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================
+   FORM COMPONENTS
+   ============================================ */
+
+/* Input Fields with LightCyan Background */
+.rp-input__control {
+  background: var(--rp-input-bg);
+  border: 1px solid var(--rp-border);
+  color: var(--rp-fg);
+  font-size: 14px;
+  height: var(--rp-control-md);
+  padding: 8px 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rp-input__control:focus {
+  border-color: var(--rp-primary);
+  outline: none;
+  box-shadow: var(--rp-focus);
+}
+
+.rp-input__control:read-only {
+  background-color: var(--rp-readonly-bg);
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.rp-input__control:disabled {
+  background-color: var(--rp-disabled-bg);
+  cursor: not-allowed;
+}
+
+/* Textarea */
+.rp-textarea__control {
+  background: var(--rp-input-bg);
+  border: 1px solid var(--rp-border);
+  color: var(--rp-fg);
+  font-size: 14px;
+  padding: 8px 12px;
+  min-height: 120px;
+}
+
+.rp-textarea__control:focus {
+  border-color: var(--rp-primary);
+  outline: none;
+  box-shadow: var(--rp-focus);
+}
+
+/* Select Dropdown */
+.rp-select__control {
+  background: var(--rp-input-bg);
+  border: 1px solid var(--rp-border);
+  color: var(--rp-fg);
+  height: var(--rp-control-md);
+}
+
+.rp-select__control:focus {
+  border-color: var(--rp-primary);
+  outline: none;
+  box-shadow: var(--rp-focus);
+}
+
+/* Switch */
+.rp-switch__track {
+  background: var(--rp-border);
+}
+
+.rp-switch__track--checked {
+  background: var(--rp-primary);
+}
+
+/* Required Field Indicator */
+.rp-required {
+  color: var(--rp-danger);
+  margin-left: 2px;
+}
+
+/* ============================================
+   MATERIAL DESIGN SHADOW UTILITIES
+   ============================================ */
+
+.md-shadow-z-1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.md-shadow-z-2 {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.22);
+}
+
+.md-shadow-z-3 {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.md-shadow-z-4 {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.26), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.md-shadow-z-5 {
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.28), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
+
+.md-shadow-none {
+  box-shadow: none !important;
+}
+
+/* ============================================
+   CARD COMPONENTS
+   ============================================ */
+
+.rp-card {
+  background: var(--rp-bg);
+  border: 1px solid var(--rp-border);
+  border-radius: var(--rp-radius);
+  box-shadow: var(--rp-shadow-md);
+  overflow: hidden;
+}
+
+.rp-card-header {
+  padding: 16px 20px;
+  background: var(--rp-bg-alt);
+  border-bottom: 1px solid var(--rp-border);
+}
+
+.rp-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--rp-fg);
+}
+
+.rp-card-body {
+  padding: 20px;
+}
+
+.rp-card-footer {
+  padding: 16px 20px;
+  background: var(--rp-bg-alt);
+  border-top: 1px solid var(--rp-border);
+}
+
+/* ============================================
+   BADGE/LABEL COMPONENTS
+   ============================================ */
+
+.rp-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 3px;
+}
+
+.rp-badge--primary {
+  background-color: var(--rp-primary);
+  color: white;
+}
+
+.rp-badge--success {
+  background-color: var(--rp-success);
+  color: white;
+}
+
+.rp-badge--warning {
+  background-color: var(--rp-warning);
+  color: #333;
+}
+
+.rp-badge--danger {
+  background-color: var(--rp-danger);
+  color: white;
+}
+
+.rp-badge--info {
+  background-color: var(--rp-info);
+  color: white;
+}
+
+/* ============================================
+   TABLE ENHANCEMENTS
+   ============================================ */
+
+.rp-table {
+  border: 1px solid var(--rp-border);
+}
+
+.rp-table th {
+  background: var(--rp-bg-alt);
+  font-weight: 600;
+  color: var(--rp-fg);
+  padding: 12px;
+}
+
+.rp-table td {
+  padding: 10px 12px;
+}
+
+.rp-table tbody tr:hover {
+  background-color: rgba(54, 198, 211, 0.05);
+}
+
+.rp-table tbody tr:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .rp-table tbody tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* ============================================
+   ALERT/MESSAGE COMPONENTS
+   ============================================ */
+
+.rp-alert {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid transparent;
+  border-radius: var(--rp-radius);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.rp-alert--success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.rp-alert--info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+.rp-alert--warning {
+  background-color: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+}
+
+.rp-alert--danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.rp-alert__icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.rp-alert__content {
+  flex: 1;
+}
+
+.rp-alert__close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+.rp-alert__close:hover {
+  opacity: 1;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 640px) {
+  .rp-btn {
+    min-height: var(--rp-control-lg);
+    padding: 0 18px;
+  }
+
+  .rp-input__control,
+  .rp-select__control {
+    min-height: var(--rp-control-lg);
+  }
+
+  .rp-switch__track {
+    width: 56px;
+    height: 30px;
+  }
+
+  .rp-switch__thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .rp-modal__dialog {
+    width: min(96%, 480px);
+    padding: 16px;
+  }
+}

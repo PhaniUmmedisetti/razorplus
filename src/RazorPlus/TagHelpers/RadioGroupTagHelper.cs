@@ -58,7 +58,7 @@ public class RadioGroupTagHelper : TagHelper
             radio.WriteTo(writer, enc);
 
             var inputHtml = writer.ToString();
-            output.Content.AppendHtml($"<label class=\"rp-radio\" for=\"{id}\">{inputHtml}<span class=\"rp-radio__label\">{enc.Encode(item.Text)}</span></label>");
+            output.Content.AppendHtml($"<label class=\"rp-radio\">{inputHtml}<span class=\"rp-radio__label\">{enc.Encode(item.Text)}</span></label>");
         }
 
         if (!string.IsNullOrWhiteSpace(Hint))
